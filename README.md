@@ -52,6 +52,8 @@ python main.py
 ```
 ## Config.json data?
 You need some data for config.json, please follow the steps below:
+- Goto telegram website and open the app bots
+- Press ```F12``` on your keyboard to open ```devtool``` or right click on app and ```select Inspect```
 
 ![image](https://github.com/jawikas/pixelverse/assets/63976518/d9f08858-e650-4605-86ad-48367ab13f7d)
 
