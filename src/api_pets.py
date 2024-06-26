@@ -4,7 +4,7 @@ from colorama import *
 from time import sleep
 from datetime import datetime
 
-from src.Battle import print_with_timestamp, merah,biru,kuning,hijau,hitam,putih,reset
+from src.Battle import print_with_timestamp, merah, biru, kuning, hijau, hitam, putih, reset
 
 init(autoreset=True)
 
@@ -68,17 +68,22 @@ class UserPixel:
         users = self.getUsers()
         print_with_timestamp(f"{hijau}Balance : {putih}{split_chunk(str(int(users['clicksCount'])))}")
         for pet in pets:
-                if pet['userPet']['isMaxLevel'] == True:
-                    print_with_timestamp(f"{hijau}[ {pet['name']} ] Is Max Level")
-                else:
-                    if currBalance >= pet['userPet']['levelUpPrice']:
-                        self.upgrade(pet['userPet']['id'])
-                        print_with_timestamp(f"{hijau}] success upgrade {kuning}{pet['name']}")
-                        sleep(0.5)
-                    else:
-                        print_with_timestamp(f"{hijau}{pet['name']} cost: {putih}-{(split_chunk(str(int(pet['userPet']['levelUpPrice'] - data['clicksCount']))))} coins left!")
+            if 'isMaxLevel' in pet['userPet'] and pet['userPet']['isMaxLevel']:
+                print_with_timestamp(f"{hijau}[ {pet['name']} ] Is Max Level")
             else:
-                print_with_timestamp(f"{hijau}{pet['name']} available for upgrade")
+                if currBalance >= pet['userPet']['levelUpPrice']:
+                    self.upgrade(pet['userPet']['id'])
+                    print_with_timestamp(f"{hijau}] success upgrade {kuning}{pet['name']}")
+                    sleep(0.5)
+                else:
+                    print_with_timestamp(f"{hijau}{pet['name']} cost: {putih}-{split_chunk(str(int(pet['userPet']['levelUpPrice'] - currBalance)))} coins left!")
+        
+        # Menambahkan logika untuk mengecek apakah ada pet yang bisa di-upgrade
+        for pet in pets:
+            if not ('isMaxLevel' in pet['userPet'] and pet['userPet']['isMaxLevel']):
+                if currBalance >= pet['userPet']['levelUpPrice']:
+                    print_with_timestamp(f"{hijau}{pet['name']} available for upgrade")
+                    break
 
     def isBroken(self):
         url = "https://api-clicker.pixelverse.xyz/api/tasks/my"
