@@ -83,4 +83,7 @@ This project is licensed under the NONE License.
 If you have any questions or suggestions, please feel free to contact at [ https://t.me/itsjaw_real ].
 
 ## Thanks to
-Template based by [@akasakaid]([url](https://github.com/akasakaid)) & [@adearman]([url](https://github.com/adearman))
+Template based by [akasakaid]([url](https://github.com/akasakaid)) & [adearman]([url](https://github.com/adearman))
+
+- https://github.com/adearman
+- https://github.com/akasakaid
