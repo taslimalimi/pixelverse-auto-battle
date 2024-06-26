@@ -11,7 +11,7 @@ Pixelverse Auto Battle Bot is an automated battle bot for Pixelverse. It include
 
 ## Requirements
 
-- Python 3.8+
+- Python 3.1 - 3.8+ (recomended)
 - The following Python packages:
   - `certifi==2024.6.2`
   - `charset-normalizer==3.3.2`
