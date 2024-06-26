@@ -65,6 +65,8 @@ class UserPixel:
         url = "https://api-clicker.pixelverse.xyz/api/pets"
         req = requests.get(url, headers=self.headers)
         pets = req.json()['data']
+        users = self.getUsers()
+        print_with_timestamp(f"{hijau}Balance : {putih}{split_chunk(str(int(users['clicksCount'])))}")
         for pet in pets:
             if currBalance >= pet['userPet']['levelUpPrice']:
                 self.upgrade(pet['userPet']['id'])
