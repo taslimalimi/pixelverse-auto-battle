@@ -45,7 +45,6 @@ async def main():
     try:
         init()
         user = UserPixel()
-        users = user.getUsers()
         await update_user_info(user)
 
         while True:
@@ -56,7 +55,6 @@ async def main():
             await battle.connect()
             del battle
 
-            print_with_timestamp(f"{hijau}Balance : {putih}{split_chunk(str(int(users['clicksCount'])))}")
             user.upgradePets(upgrade_pets=config['upgrade_pets'])
             # Countdown Timer sebelum memulai pertempuran baru
             countdown_timer(10)
