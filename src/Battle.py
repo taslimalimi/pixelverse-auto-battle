@@ -220,7 +220,7 @@ class Battle:
         else:
             print_with_timestamp(f"{merah}Max retries reached. Exiting...")
             
-if __name__ == "__Battle__":
+if __name__ == "__main__":
     try:
         asyncio.run(Battle())
     except KeyboardInterrupt:
