@@ -24,7 +24,8 @@ def print_banner():
     print(Fore.GREEN + Style.BRIGHT + banner + Style.RESET_ALL)
     print(hijau + "    Pixeltap by Pixelverse Auto Battle")
     print(merah + f"    NOT FOR SALE = Free to use")
-
+    print(merah + f"    before start please '{hijau}git pull{merah}' to update bot")
+    
 async def update_user_info(user):
     users = user.getUsers()
     stats = user.getStats()
