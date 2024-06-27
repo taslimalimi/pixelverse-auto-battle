@@ -151,7 +151,7 @@ class Battle:
     async def connect(self):
         uri = "wss://api-clicker.pixelverse.xyz/socket.io/?EIO=4&transport=websocket"
         retry_count = 0
-        while retry_count < 5:
+        while retry_count < 10:
             try:
                 async with websockets.connect(uri) as websocket:
                     self.websocket = websocket
@@ -219,3 +219,10 @@ class Battle:
                 await asyncio.sleep(5)
         else:
             print_with_timestamp(f"{merah}Max retries reached. Exiting...")
+            
+if __name__ == "__Battle__":
+    try:
+        asyncio.run(Battle())
+    except KeyboardInterrupt:
+        print_with_timestamp(f"{merah}Program terminated by user.")
+        sys.exit()
