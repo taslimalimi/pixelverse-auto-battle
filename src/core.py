@@ -45,8 +45,9 @@ async def main():
     try:
         init()
         user = UserPixel()
+        
         await update_user_info(user)
-
+        users = user.getUsers()
         while True:
             with open('./config.json', 'r') as config_file:
                 config = json.load(config_file)
@@ -56,12 +57,18 @@ async def main():
             del battle
 
             user.upgradePets(upgrade_pets=config['upgrade_pets'])
+            print_with_timestamp(f"{hijau}Balance : {putih}{split_chunk(str(int(users['clicksCount'])))}")
+            print_with_timestamp(f"{hitam}{'~' * 42}\r")
             # Countdown Timer sebelum memulai pertempuran baru
             countdown_timer(10)
             await asyncio.sleep(1)
     except Exception as e:
         print(e)
 
-if __name__ == '__main__':
-    main()
+if __name__ == "__main__":
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print_with_timestamp(f"{merah}Program terminated by user.")
+        sys.exit()
 
