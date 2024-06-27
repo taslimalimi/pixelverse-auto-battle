@@ -176,7 +176,7 @@ class Battle:
                     self.player2 = {
                         "name": data[1]['player2']['username']
                     }
-                    print_with_timestamp(f"{hitam}{'~' * 42}\r")
+                    
                     print_with_timestamp(f"{kuning}Found a new challenger:")
                     print_with_timestamp(f"{hijau}{data[1]['player1']['username']}{putih} VS {hijau}{data[1]['player2']['username']}")
                     
@@ -204,6 +204,11 @@ class Battle:
                 await asyncio.sleep(5)
             except requests.exceptions.RequestException as e:
                 print_with_timestamp(f"{merah}HTTP connection error: {e}", flush=True)
+                retry_count += 1
+                print_with_timestamp(f"{kuning}Retrying connection ({retry_count}/5)...",end="\n", flush=True)
+                await asyncio.sleep(5)
+            except json.JSONDecodeError as e:
+                print_with_timestamp(f"{merah}Error decoding JSON: {e}", flush=True)
                 retry_count += 1
                 print_with_timestamp(f"{kuning}Retrying connection ({retry_count}/5)...",end="\n", flush=True)
                 await asyncio.sleep(5)
