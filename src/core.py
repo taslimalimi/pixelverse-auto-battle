@@ -4,7 +4,7 @@ import sys
 import os
 from src.Battle import Battle
 from src.Battle import countdown_timer, split_chunk,clear_screen
-from src.Battle import print_with_timestamp, merah,biru,kuning,hijau,hitam,putih,reset
+from src.Battle import print_with_timestamp, merah,biru,kuning,hijau,hitam,putih
 from src.api_pets import UserPixel
 from colorama import *
 from datetime import datetime
@@ -59,8 +59,8 @@ async def main():
             user.upgradePets(upgrade_pets=config['upgrade_pets'])
             print_with_timestamp(f"{hijau}Balance : {putih}{split_chunk(str(int(users['clicksCount'])))}")
             print_with_timestamp(f"{hitam}{'~' * 42}\r")
-            # Countdown Timer sebelum memulai pertempuran baru
-            countdown_timer(10)
+            
+            countdown_timer(15)
             await asyncio.sleep(1)
     except Exception as e:
         print(e)
@@ -71,4 +71,3 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print_with_timestamp(f"{merah}Program terminated by user.")
         sys.exit()
-
