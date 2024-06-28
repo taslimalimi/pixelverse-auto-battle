@@ -72,14 +72,14 @@ class UserPixel:
                 else:
                     if currBalance >= pet['userPet']['levelUpPrice']:
                         self.upgrade(pet['userPet']['id'])
-                        print_with_timestamp(f"{kuning}{pet['name']} available for upgrade")
+                        print_with_timestamp(f"{hijau}success upgrade {kuning}{pet['name']}")
                         sleep(0.5)
                     else:
                         print_with_timestamp(f"{hijau}{pet['name']} cost: {putih}-{split_chunk(str(int(pet['userPet']['levelUpPrice'] - currBalance)))} {kuning}left!")
             else:
                 if not ('isMaxLevel' in pet['userPet'] and pet['userPet']['isMaxLevel']):
                     if currBalance >= pet['userPet']['levelUpPrice']:
-                        print_with_timestamp(f"{hijau}] success upgrade {kuning}{pet['name']}")
+                        print_with_timestamp(f"{kuning}{pet['name']} available for upgrade")
                         break
         
         print_with_timestamp(f"{hijau}Balance after : {putih}{split_chunk(str(int(data['clicksCount'])))}")
