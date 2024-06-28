@@ -2,5 +2,7 @@
     "secret": "your_secret_key",
     "tgId": "your_telegram_id",
     "initData": "your_init_data",
-    "upgrade_pets": true 
+    "upgrade_pets": false,
+    "min_hit_speed": 0.1,
+    "max_hit_speed": 0.12
 }
