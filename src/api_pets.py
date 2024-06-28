@@ -61,29 +61,32 @@ class UserPixel:
     def upgradePets(self, upgrade_pets: bool):
         data = self.getUsers()
         currBalance = data['clicksCount']
+        pets = self.getPets()
         url = "https://api-clicker.pixelverse.xyz/api/pets"
         req = requests.get(url, headers=self.headers)
         pets = req.json()['data']
-        
+
         for pet in pets:
-            if upgrade_pets:
-                if 'isMaxLevel' in pet['userPet'] and pet['userPet']['isMaxLevel']:
-                    print_with_timestamp(f"{hijau}[ {pet['name']} ] Is Max Level")
-                else:
+            if 'isMaxLevel' in pet['userPet'] and pet['userPet']['isMaxLevel']:
+                print_with_timestamp(f"{hijau}[ {pet['name']} ] Is Max Level")
+            else:
+                if upgrade_pets:
                     if currBalance >= pet['userPet']['levelUpPrice']:
-                        self.upgrade(pet['userPet']['id'])
-                        print_with_timestamp(f"{hijau}success upgrade {kuning}{pet['name']}")
+                        self.upgrade(pet['userPet']['id'])  # Asumsikan ini adalah metode yang melakukan upgrade pada pet
+                        print_with_timestamp(f"{hijau}Success upgrade {kuning}{pet['name']}")
+                        currBalance -= pet['userPet']['levelUpPrice']  # Mengurangi balance setelah upgrade
                         sleep(0.5)
                     else:
                         print_with_timestamp(f"{hijau}{pet['name']} cost: {putih}-{split_chunk(str(int(pet['userPet']['levelUpPrice'] - currBalance)))} {kuning}left!")
-            else:
-                if not ('isMaxLevel' in pet['userPet'] and pet['userPet']['isMaxLevel']):
+                else:
                     if currBalance >= pet['userPet']['levelUpPrice']:
                         print_with_timestamp(f"{kuning}{pet['name']} available for upgrade")
-                        break
+                    else:
+                        print_with_timestamp(f"{hijau}{pet['name']} cost: {putih}-{split_chunk(str(int(pet['userPet']['levelUpPrice'] - currBalance)))} {kuning}left!")
         
-        print_with_timestamp(f"{hijau}Balance after : {putih}{split_chunk(str(int(data['clicksCount'])))}")
+        print_with_timestamp(f"{hijau}Balance after : {putih}{split_chunk(str(int(currBalance)))}")
         print_with_timestamp(f"{hitam}{'~' * 42}\r")
+
 
     def isBroken(self):
         url = "https://api-clicker.pixelverse.xyz/api/tasks/my"
