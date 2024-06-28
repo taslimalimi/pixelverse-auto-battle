@@ -44,7 +44,7 @@ Pixelverse Auto Battle Bot is an automated battle bot for Pixelverse. It include
     pip install -r requirements.txt
     ```
 
-3. Configure the bot by editing the `config.json` file with your own credentials:
+3. Configure the bot by editing or create the `config.json` file with your own credentials:
     ```json
     {
         "secret": "your_secret_key",
