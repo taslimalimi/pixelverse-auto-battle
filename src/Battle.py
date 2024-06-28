@@ -47,12 +47,8 @@ def split_chunk(var):
     return ','.join([var[i:i + n] for i in range(0, len(var), n)])[::-1]
 
 class Battle:
-    def __init__(self):
+    def __init__(self, config):
         self.url = 'https://api-clicker.pixelverse.xyz/api/users'
-
-        with open('./config.json', 'r') as file:
-            config = json.load(file)
-            
         self.secret = config['secret']
         self.tgId = config['tgId']
         self.initData = config['initData']
@@ -65,6 +61,8 @@ class Battle:
         }
         self.stop_event = asyncio.Event()
         self.stats = None  # Inisialisasi stats
+        self.min_hit_speed = config.get('min_hit_speed', 0.09)
+        self.max_hit_speed = config.get('max_hit_speed', 0.12)
 
     async def sendHit(self):
         while not self.stop_event.is_set():
@@ -82,7 +80,7 @@ class Battle:
                 await self.websocket.send(f"42{json.dumps(content)}")
             except Exception as e:
                 return
-            await asyncio.sleep(uniform(0.09, 0.12))
+            await asyncio.sleep(uniform(self.min_hit_speed, self.max_hit_speed))
 
     async def listenerMsg(self):
         while not self.stop_event.is_set():
@@ -113,9 +111,9 @@ class Battle:
                     print_with_timestamp(
                         f"{kuning}{player1_name} "
                         f"{player1_energy_color}[{player1_energy}] "
-                        f"⚔️ "
+                        f"| "
                         f"{player2_energy_color}[{player2_energy}] "
-                        f"{kuning}{player2_name}    ",
+                        f"{kuning}{player2_name}      ",
                         end="\r"
                     )
                 
