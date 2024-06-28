@@ -2,12 +2,22 @@
 
 Pixelverse Auto Battle Bot is an automated battle bot for Pixelverse. It includes functionalities for managing pets, engaging in battles, and displaying user statistics.
 
+## fix some fuction (6/28/2024): 
+
+ - update upgrade_pet fuction
+ - add argument (--upgrade)
+ - add min & max hit speed configuration
+ - update config.json
+ - update balance after fight
+
 ## Features
 
 - Automated pet upgrades
 - Real-time battle automation
 - User statistics display
 - Configurable settings via `config.json`
+- min & max hit speed configuration `NEW`
+- argument (--upgrade) to activate upgrade_pets
 
 ## Requirements
 
@@ -40,7 +50,9 @@ Pixelverse Auto Battle Bot is an automated battle bot for Pixelverse. It include
         "secret": "your_secret_key",
         "tgId": "your_telegram_id",
         "initData": "your_init_data",
-        "upgrade_pets": true
+        "upgrade_pets": false,
+        "min_hit_speed": 0.1,
+        "max_hit_speed": 0.12
     }
     ```
 
@@ -49,6 +61,10 @@ Pixelverse Auto Battle Bot is an automated battle bot for Pixelverse. It include
 Run the bot using the following command:
 ```bash
 python main.py
+```
+Run the bot & UPGRADE_PET fuction with Fuction following command:
+```bash
+python main.py --upgrade
 ```
 ## Config.json data?
 You need some data for config.json, please follow the steps below:
