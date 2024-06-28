@@ -36,7 +36,7 @@ Pixelverse Auto Battle Bot is an automated battle bot for Pixelverse. It include
 1. Clone the repository:
     ```bash
     git clone https://github.com/jawikas/pixelverse.git
-    cd pixelverse
+    cd pixelverse-auto-battle
     ```
 
 2. Install the required packages:
