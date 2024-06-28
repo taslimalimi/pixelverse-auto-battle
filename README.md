@@ -17,7 +17,7 @@ Pixelverse Auto Battle Bot is an automated battle bot for Pixelverse. It include
 - User statistics display
 - Configurable settings via `config.json`
 - min & max hit speed configuration `NEW`
-- argument (--upgrade) to activate upgrade_pets
+- argument (--upgrade) to activate upgrade_pets `NEW`
 
 ## Requirements
 
