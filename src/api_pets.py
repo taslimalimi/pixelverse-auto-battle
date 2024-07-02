@@ -68,14 +68,16 @@ class UserPixel:
 
         for pet in pets:
             if 'isMaxLevel' in pet['userPet'] and pet['userPet']['isMaxLevel']:
-                print_with_timestamp(f"{hijau}[ {pet['name']} ] Is Max Level")
+                print_with_timestamp(f"{hijau}{pet['name']} Is Max Level")
+            elif pet['userPet']['level'] >= 39:
+                print_with_timestamp(f"{kuning}{pet['name']} has reached lvl {putih}{pet['userPet']['level']}")
+                continue
             else:
                 if upgrade_pets:
                     if currBalance >= pet['userPet']['levelUpPrice']:
-                        self.upgrade(pet['userPet']['id'])  # Asumsikan ini adalah metode yang melakukan upgrade pada pet
+                        self.upgrade(pet['userPet']['id'])
                         print_with_timestamp(f"{hijau}Success upgrade {kuning}{pet['name']}")
-                        currBalance -= pet['userPet']['levelUpPrice']  # Mengurangi balance setelah upgrade
-                        sleep(0.5)
+                        currBalance -= pet['userPet']['levelUpPrice']
                     else:
                         print_with_timestamp(f"{hijau}{pet['name']} cost: {putih}-{split_chunk(str(int(pet['userPet']['levelUpPrice'] - currBalance)))} {kuning}left!")
                 else:
@@ -83,7 +85,7 @@ class UserPixel:
                         print_with_timestamp(f"{kuning}{pet['name']} available for upgrade")
                     else:
                         print_with_timestamp(f"{hijau}{pet['name']} cost: {putih}-{split_chunk(str(int(pet['userPet']['levelUpPrice'] - currBalance)))} {kuning}left!")
-        
+            
         print_with_timestamp(f"{hijau}Balance after : {putih}{split_chunk(str(int(currBalance)))}")
         print_with_timestamp(f"{hitam}{'~' * 42}\r")
 
