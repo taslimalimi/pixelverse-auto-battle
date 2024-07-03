@@ -2,6 +2,11 @@
 
 Pixelverse Auto Battle Bot is an automated battle bot for Pixelverse. It includes functionalities for managing pets, engaging in battles, and displaying user statistics.
 
+### Buy me Coffee ☕ 
+```
+0x705C71fc031B378586695c8f888231e9d24381b4
+```
+
 ## fix some fuction (6/28/2024): 
 
  - update upgrade_pet fuction
