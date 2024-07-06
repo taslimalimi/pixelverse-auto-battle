@@ -3,10 +3,12 @@ import json
 import sys
 import time
 import os
+import hmac
+import hashlib
 from datetime import datetime
 import websockets
 from colorama import *
-from random import uniform
+from random import uniform, randint
 import requests
 
 init(autoreset=True)
@@ -49,8 +51,8 @@ def split_chunk(var):
 class Battle:
     def __init__(self, config):
         self.url = 'https://api-clicker.pixelverse.xyz/api/users'
-        self.secret = config['secret']
         self.tgId = config['tgId']
+        self.secret = self.get_secret(self.tgId)
         self.initData = config['initData']
         self.websocket: websockets.WebSocketClientProtocol = None
         self.battleId = ""
@@ -60,16 +62,22 @@ class Battle:
             "attack": False
         }
         self.stop_event = asyncio.Event()
-        self.stats = None  # Inisialisasi stats
+        self.stats = None
         self.min_hit_speed = config.get('min_hit_speed', 0.09)
         self.max_hit_speed = config.get('max_hit_speed', 0.12)
-
+    
+    def get_secret(self, userid):
+        rawr = "adwawdasfajfklasjglrejnoierjboivrevioreboidwa"
+        secret = hmac.new(
+            rawr.encode("utf-8"), str(userid).encode("utf-8"), hashlib.sha256
+        ).hexdigest()
+        return secret
+    
     async def sendHit(self):
         while not self.stop_event.is_set():
             if self.superHit:
-                await asyncio.sleep(0.4)
+                await asyncio.sleep(uniform(self.min_hit_speed, self.max_hit_speed))
                 continue
-            
             content = [
                 "HIT",
                 {
@@ -90,17 +98,19 @@ class Battle:
                 print_with_timestamp(f"{merah}{err}")
                 self.stop_event.set()
                 return
-                
+    
             if data.startswith('42'):
                 data = json.loads(data[2:])
-                
                 if data[0] == "HIT":
                     player1_energy = data[1]['player1']['energy']
                     player2_energy = data[1]['player2']['energy']
                     player1_name = self.player1['name']
                     player2_name = self.player2['name']
-
-                    # Tentukan warna untuk energi
+                    # Cek jika username pemain adalah tgId
+                    if player1_name == self.tgId:
+                        player1_name = "you"
+                    if player2_name == self.tgId:
+                        player2_name = "you"
                     if player1_energy < player2_energy:
                         player1_energy_color = merah
                         player2_energy_color = hijau
@@ -110,29 +120,59 @@ class Battle:
 
                     print_with_timestamp(
                         f"{kuning}{player1_name} "
-                        f"{player1_energy_color}[{player1_energy}] "
-                        f"| "
+                        f"{player1_energy_color}[{player1_energy}]"
                         f"{player2_energy_color}[{player2_energy}] "
-                        f"{kuning}{player2_name}      ",
+                        f"{kuning}{player2_name}  ",
                         end="\r"
                     )
-                
+                elif data[0] == "SET_SUPER_HIT_PREPARE":
+                    self.superHit = True
+                    print_with_timestamp(f"{kuning}Super hit preparation started         ", end="\r", flush=True)
+
+                elif data[0] == "SET_SUPER_HIT_ATTACK_ZONE":
+                    content = [
+                        "SET_SUPER_HIT_ATTACK_ZONE",
+                        {
+                            "battleId": self.battleId,
+                            "zone": randint(1, 4)
+                        }
+                    ]
+                    try:
+                        await self.websocket.send(f"42{json.dumps(content)}")
+                        self.strike['attack'] = True
+                        print_with_timestamp(f"{kuning}Super hit attack zone set      ", end="\r", flush=True)
+                    except Exception as e:
+                        print_with_timestamp(f"{merah}Error sending super hit attack zone: {e}", flush=True)
+
+                elif data[0] == "SET_SUPER_HIT_DEFEND_ZONE":
+                    content = [
+                        "SET_SUPER_HIT_DEFEND_ZONE",
+                        {
+                            "battleId": self.battleId,
+                            "zone": randint(1, 4)
+                        }
+                    ]
+                    try:
+                        await self.websocket.send(f"42{json.dumps(content)}")
+                        self.strike['defense'] = True
+                        print_with_timestamp(f"{kuning}Super hit defend zone set      ", end="\r", flush=True)
+                    except Exception as e:
+                        print_with_timestamp(f"{merah}Error sending super hit defend zone: {e}", flush=True)
+
                 elif data[0] == "END":
-                    await asyncio.sleep(0.5)
+                    await asyncio.sleep(0.4)
                     print('')
                     if data[1]['result'] == "WIN":
                         print_with_timestamp(f"{hijau}Congratulations, you are victory!")
                         print_with_timestamp(f"{hijau}Victory reward: {putih}+{split_chunk(str(int(data[1]['reward'])))}")
-                        
                     else:
                         print_with_timestamp(f"{merah}Defeat, better luck next time.")
                         print_with_timestamp(f"{merah}Defeat penalty: {putih}-{split_chunk(str(int(data[1]['reward'])))}")
-                        
+
                     await self.websocket.recv()
                     self.stop_event.set()
-
                     return
-                    
+
                 try:
                     if (self.strike['attack'] and not self.strike['defense']) or (self.strike['defense'] and not self.strike['attack']):
                         await self.websocket.recv()
@@ -142,10 +182,23 @@ class Battle:
                         await self.websocket.send("3")
                         await self.websocket.recv()
 
-                        self.superHit = False          
+                        # Reset superHit and strike after super hit attack and defense are done
+                        self.superHit = False
+                        self.strike['attack'] = False
+                        self.strike['defense'] = False
+                        print_with_timestamp(f"{kuning}Super hit completed, who win ?       ", end="\r", flush=True)
                 except Exception as e:
                     print_with_timestamp(f"{merah}Error in strike handling: {e}")
-                
+                    pass
+
+    async def handleWssFreeze(self, seconds: int):
+        timeToReach = time() + seconds
+
+        while not self.stop_event.is_set():
+            if time() > timeToReach:
+                self.websocket.close()
+            await asyncio.sleep(0.001)
+
     async def connect(self):
         uri = "wss://api-clicker.pixelverse.xyz/socket.io/?EIO=4&transport=websocket"
         retry_count = 0
@@ -165,7 +218,7 @@ class Battle:
                     
                     data = await websocket.recv()
                     if not data:
-                        continue  # Meneruskan iterasi jika data kosong
+                        continue
                     data = json.loads(data[2:])
                     self.battleId = data[1]['battleId']
                     self.player1 = {
@@ -196,24 +249,28 @@ class Battle:
                     await asyncio.gather(listenerMsgTask, hitTask)
                 break
             except websockets.exceptions.ConnectionClosed as e:
-                print_with_timestamp(f"{merah}WebSocket connection closed: {e}", flush=True)
+                print_with_timestamp(f"{merah}WebSocket connection closed: ", flush=True)
+                print_with_timestamp(f"{merah}{e}", flush=True)
                 retry_count += 1
-                print_with_timestamp(f"{kuning}Retrying connection ({retry_count}/5)...",end="\n", flush=True)
+                print_with_timestamp(f"{kuning}Retrying connection ({retry_count}/10)...",end="\n", flush=True)
                 await asyncio.sleep(5)
             except requests.exceptions.RequestException as e:
-                print_with_timestamp(f"{merah}HTTP connection error: {e}", flush=True)
+                print_with_timestamp(f"{merah}HTTP connection error: ", flush=True)
+                print_with_timestamp(f"{merah}{e}", flush=True)
                 retry_count += 1
-                print_with_timestamp(f"{kuning}Retrying connection ({retry_count}/5)...",end="\n", flush=True)
+                print_with_timestamp(f"{kuning}Retrying connection ({retry_count}/10)...",end="\n", flush=True)
                 await asyncio.sleep(5)
             except json.JSONDecodeError as e:
-                print_with_timestamp(f"{merah}Error decoding JSON: {e}", flush=True)
+                print_with_timestamp(f"{merah}Error decoding JSON: ", flush=True)
+                print_with_timestamp(f"{merah}{e}", flush=True)
                 retry_count += 1
-                print_with_timestamp(f"{kuning}Retrying connection ({retry_count}/5)...",end="\n", flush=True)
+                print_with_timestamp(f"{kuning}Retrying connection ({retry_count}/10)...",end="\n", flush=True)
                 await asyncio.sleep(5)
             except Exception as e:
-                print_with_timestamp(f"{merah}Error connecting to websocket: {e}", flush=True)
+                print_with_timestamp(f"{merah}Error connecting to websocket: ", flush=True)
+                print_with_timestamp(f"{merah}{e}", flush=True)
                 retry_count += 1
-                print_with_timestamp(f"{kuning}Retrying connection ({retry_count}/5)...",end="\n", flush=True)
+                print_with_timestamp(f"{kuning}Retrying connection ({retry_count}/10)...",end="\n", flush=True)
                 await asyncio.sleep(5)
         else:
             print_with_timestamp(f"{merah}Max retries reached. Exiting...")
