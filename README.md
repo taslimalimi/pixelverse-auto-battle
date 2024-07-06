@@ -7,8 +7,10 @@ Pixelverse Auto Battle Bot is an automated battle bot for Pixelverse. It include
 0x705C71fc031B378586695c8f888231e9d24381b4
 ```
 
-## fix some fuction (6/28/2024): 
+## fix some fuction (7/7/2024): 
 
+ - Fix superHit `new`
+ - Remove "tg id" and "secret" `new`
  - update upgrade_pet fuction
  - add argument (--upgrade)
  - add min & max hit speed configuration
@@ -51,15 +53,17 @@ Pixelverse Auto Battle Bot is an automated battle bot for Pixelverse. It include
 
 3. Configure the bot by editing or create the `config.json` file with your own credentials:
     ```json
-    {
-        "secret": "your_secret_key",
-        "tgId": "your_telegram_id",
-        "initData": "your_init_data",
-        "upgrade_pets": false,
-        "min_hit_speed": 0.1,
-        "max_hit_speed": 0.12
-    }
+   {
+       "secret": "", "tgId": "",
+       "initData": "YourQuery_id=xxxxisHere",
+       "upgrade_pets": false,
+       "min_hit_speed": 0.09,
+       "max_hit_speed": 0.111
+   }
     ```
+( Update 7/7/2024 ) reduce the need for "tg id" and "secret" because now it is automatically executed in Battle.py, and you only need to enter the Query ID into config.json
+
+Please Leave "tg id" and "secret" blank
 
 ## Usage
 
@@ -77,6 +81,8 @@ You need some data for config.json, please follow the steps below:
 - Press ```F12``` on your keyboard to open ```devtool``` or right click on app and ```select Inspect```
 
 ![image](https://github.com/jawikas/pixelverse/assets/63976518/d9f08858-e650-4605-86ad-48367ab13f7d)
+
+### Note : Please Leave "tg id" and "secret" blank (only need your Query_id)
 
 ## File Descriptions
 ```
