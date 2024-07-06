@@ -1,8 +1,7 @@
 {
-    "secret": "your_secret_key",
-    "tgId": "your_telegram_id",
-    "initData": "your_init_data",
+    "secret": "", "tgId": "",
+    "initData": "YourQuery_id=xxxxisHere",
     "upgrade_pets": false,
-    "min_hit_speed": 0.1,
-    "max_hit_speed": 0.12
+    "min_hit_speed": 0.09,
+    "max_hit_speed": 0.111
 }
