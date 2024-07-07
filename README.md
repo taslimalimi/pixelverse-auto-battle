@@ -7,7 +7,15 @@ Pixelverse Auto Battle Bot is an automated battle bot for Pixelverse. It include
 0x705C71fc031B378586695c8f888231e9d24381b4
 ```
 
-## fix some fuction (7/7/2024): 
+## Fix some fuction (7/8/2024): 
+
+In this update: (`https://t.me/zddfs`)
+
+- Added checks for the presence of keys in the stats dictionary `new`
+
+- Fixed update_user_info function to handle missing keys `new`
+
+- Updated strings so that the code can work correctly with parameters from the query string `new`
 
  - Fix superHit `new`
  - Remove "tg id" and "secret" `new`
