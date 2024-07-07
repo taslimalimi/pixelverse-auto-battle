@@ -3,13 +3,12 @@ import json
 import sys
 import os
 import argparse
-import random
+from datetime import datetime
+from colorama import *
 from src.Battle import Battle
 from src.Battle import countdown_timer, split_chunk, clear_screen
 from src.Battle import print_with_timestamp, merah, biru, kuning, hijau, hitam, putih
 from src.api_pets import UserPixel
-from colorama import *
-from datetime import datetime
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -28,20 +27,33 @@ def print_banner():
     print(merah + f"    NOT FOR SALE = Free to use")
     print(merah + f"    Please {hijau}'git pull{merah}' to update this bot")
 
+def parse_query_string(query):
+    params = {}
+    for part in query.split("&"):
+        key, value = part.split("=")
+        params[key] = value
+    return params
+
 async def update_user_info(user):
     users = user.getUsers()
     stats = user.getStats()
-    winRate = (stats['wins'] / stats['battlesCount']) * 100 if stats['battlesCount'] > 0 else 0
+
+    wins = stats.get('wins', 0)
+    loses = stats.get('loses', 0)
+    battles_count = stats.get('battlesCount', 0)
+    wins_reward = stats.get('winsReward', 0)
+    loses_reward = stats.get('losesReward', 0)
+    win_rate = (wins / battles_count) * 100 if battles_count > 0 else 0
 
     print(f"{hijau}{'~' * 62}\r")
-    print_with_timestamp(f"{hijau}User: {putih}{users['username']} {kuning}| Balance: {putih}{split_chunk(str(int(users['clicksCount'])))}")
+    print_with_timestamp(f"{hijau}User: {putih}{users.get('username', 'Unknown')} {kuning}| Balance: {putih}{split_chunk(str(int(users.get('clicksCount', 0))))}")
     print_with_timestamp(f"{hijau}W{kuning}/{merah}L {hijau}: "
-                         f"{hijau}{split_chunk(str(stats['wins']))}{kuning}/{merah}{split_chunk(str(stats['loses']))}\t "
-                         f"{kuning}| {hijau}Wins: {putih}{split_chunk(str(stats['winsReward']))}")
-    print_with_timestamp(f"{hijau}Match: {putih}{split_chunk(str(stats['battlesCount']))}\t "
-                         f"{kuning}| {merah}Loses: {putih}{split_chunk(str(stats['losesReward']))}")
-    print_with_timestamp(f"{hijau}Winrate: {putih}{winRate:.2f}%\t "
-                         f"{kuning}| {biru}Earned: {putih}{split_chunk(str(stats['winsReward'] + stats['losesReward']))}")
+                         f"{hijau}{split_chunk(str(wins))}{kuning}/{merah}{split_chunk(str(loses))}\t "
+                         f"{kuning}| {hijau}Wins: {putih}{split_chunk(str(wins_reward))}")
+    print_with_timestamp(f"{hijau}Match: {putih}{split_chunk(str(battles_count))}\t "
+                         f"{kuning}| {merah}Loses: {putih}{split_chunk(str(loses_reward))}")
+    print_with_timestamp(f"{hijau}Winrate: {putih}{win_rate:.2f}%\t "
+                         f"{kuning}| {biru}Earned: {putih}{split_chunk(str(wins_reward + loses_reward))}")
 
 async def main():
     arg = argparse.ArgumentParser()
